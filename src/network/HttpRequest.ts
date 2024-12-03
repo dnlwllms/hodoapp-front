@@ -8,7 +8,7 @@ type Header = HeadersInit & { Authorization?: string };
 export default class HttpRequest {
   static token = '';
 
-  private static baseUrl = `http://${process.env.NEXT_PUBLIC_LIGHT_SAIL_IP}:9000`;
+  private static baseUrl = `http://${process.env.NEXT_PUBLIC_LIGHT_SAIL_IP}`;
 
   private static credentials = 'include' as const;
 
