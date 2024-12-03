@@ -1,19 +1,19 @@
-import queryString from 'query-string';
+import queryString from "query-string";
 
-import { CommonResponse } from './types';
-import { parseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { CommonResponse } from "./types";
+import { parseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 type Header = HeadersInit & { Authorization?: string };
 
 export default class HttpRequest {
-  static token = '';
+  static token = "";
 
-  private static baseUrl = `http://${process.env.NEXT_PUBLIC_LIGHT_SAIL_IP}`;
+  private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  private static credentials = 'include' as const;
+  private static credentials = "include" as const;
 
   static defaultHeaders: Header = {
-    'Content-Type': 'application/json; charset=UTF-8',
+    "Content-Type": "application/json; charset=UTF-8",
   };
 
   private static async responseToJson<Res = unknown>(response: Response) {
@@ -29,12 +29,12 @@ export default class HttpRequest {
   static async get<Res = unknown, Req = unknown>(
     uri: string,
     bodyData?: Req,
-    headerData?: Header,
+    headerData?: Header
   ) {
     let url = this.baseUrl + uri;
 
-    if (typeof document !== 'undefined') {
-      const accessToken = parseCookie(document.cookie).get('accessToken');
+    if (typeof document !== "undefined") {
+      const accessToken = parseCookie(document.cookie).get("accessToken");
 
       if (accessToken) {
         this.defaultHeaders.Authorization = `Bearer ${accessToken}`;
@@ -48,7 +48,7 @@ export default class HttpRequest {
     }
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       credentials: this.credentials,
       headers: {
         ...this.defaultHeaders,
@@ -60,10 +60,10 @@ export default class HttpRequest {
   }
 
   static async set<Res = unknown, Req = unknown>(
-    method: 'POST' | 'PUT' | 'DELETE',
+    method: "POST" | "PUT" | "DELETE",
     uri: string,
     bodyData?: Req,
-    headerData?: Header,
+    headerData?: Header
   ) {
     const response = await fetch(this.baseUrl + uri, {
       method,
