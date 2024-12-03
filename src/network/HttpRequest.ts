@@ -65,7 +65,6 @@ export default class HttpRequest {
     bodyData?: Req,
     headerData?: Header
   ) {
-    console.log(this.baseUrl);
     const response = await fetch(this.baseUrl + uri, {
       method,
       credentials: this.credentials,
