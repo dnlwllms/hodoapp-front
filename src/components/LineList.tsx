@@ -52,7 +52,9 @@ export default function LineList(props: Props) {
   );
 
   const [tab, setTab] = useState(
-    Number.isNaN(props.searchParams.tab) ? 0 : Number(props.searchParams.tab)
+    props.searchParams.tab && !Number.isNaN(props.searchParams.tab)
+      ? Number(props.searchParams.tab)
+      : 0
   );
 
   useQueryFilter({
