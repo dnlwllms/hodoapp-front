@@ -40,7 +40,7 @@ body {
 }
 
 .tabs-bordered > .tab {
-  @apply border-gray-600;
+  @apply border-gray-600 text-gray-400;
 
   padding-bottom: 1px;
   border-bottom-width: 1px;
