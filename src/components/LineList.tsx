@@ -244,23 +244,25 @@ export default function LineList(props: Props) {
           );
 
           return (
-            <div className="p-4">
-              <h3 className="text-xl font-bold mb-4">사용 금액</h3>
-              <div>
-                {summaryData.data.results.map(
-                  ({ id, nickname, totalPrice }) => {
-                    return (
-                      <div key={id}>
-                        {nickname}: {totalPrice.toLocaleString()}
-                      </div>
-                    );
-                  }
-                )}
+            <div className="py-8 px-4 flex flex-col gap-[10px] text-gray-100">
+              <div className="p-4 bg-gray-800 rounded-2xl">
+                <h3 className="text-[20px] font-bold mb-4">사용금액</h3>
+                <div className="flex flex-col gap-[10px]">
+                  {summaryData.data.results.map(
+                    ({ id, nickname, totalPrice }) => {
+                      return (
+                        <div key={id}>
+                          {nickname}: {totalPrice.toLocaleString()}원
+                        </div>
+                      );
+                    }
+                  )}
+                  <p>인당 금액: {average.toLocaleString()}원</p>
+                </div>
               </div>
-              <p>인당 금액: {average.toLocaleString()}</p>
               {lessThenAverage.length > 0 && (
-                <>
-                  <h3 className="text-xl font-bold my-4">정산할 금액</h3>
+                <div className="p-4 bg-gray-800 rounded-2xl">
+                  <h3 className="text-[20px] font-bold mb-4">정산할 금액</h3>
                   {summaryData.data.results
                     .filter(({ totalPrice }) => totalPrice < average)
                     .map(({ id, nickname, totalPrice }) => {
@@ -271,7 +273,7 @@ export default function LineList(props: Props) {
                         </div>
                       );
                     })}
-                </>
+                </div>
               )}
             </div>
           );
