@@ -1,4 +1,4 @@
-import HttpRequest from './HttpRequest';
+import HttpRequest from "./HttpRequest";
 
 import {
   PostAuthResponseParams,
@@ -9,11 +9,14 @@ import {
   PostLineRequestParams,
   GetAuthResponseParams,
   PutLineRequestParams,
-} from './types';
+  GetLinesTotalPriceSummaryResponseParams,
+  GetLinesTotalPriceSummaryRequestParams,
+} from "./types";
 
 export enum QueryKey {
   GetAuth,
   GetLines,
+  GetLinesTotalPriceSummary,
 }
 
 export enum MutationKey {
@@ -30,9 +33,9 @@ export async function getAuth() {
 
 export async function postAuth(params: PostAuthRequestParams) {
   const res = await HttpRequest.set<PostAuthResponseParams, typeof params>(
-    'POST',
+    "POST",
     `/auth`,
-    params,
+    params
   );
 
   return res;
@@ -41,18 +44,27 @@ export async function postAuth(params: PostAuthRequestParams) {
 export async function getLines(params?: GetLineRequestParams) {
   return await HttpRequest.get<PaginationResponse<Line>, typeof params>(
     `/lines`,
-    params,
+    params
   );
 }
 
 export async function postLines(params: PostLineRequestParams) {
-  return await HttpRequest.set<Line, typeof params>('POST', `/lines`, params);
+  return await HttpRequest.set<Line, typeof params>("POST", `/lines`, params);
 }
 
 export async function putLines(params: PutLineRequestParams) {
-  return await HttpRequest.set<Line, typeof params>('PUT', `/lines`, params);
+  return await HttpRequest.set<Line, typeof params>("PUT", `/lines`, params);
 }
 
 export async function deleteLines(id: string) {
-  return await HttpRequest.set<Line>('DELETE', `/lines/${id}`);
+  return await HttpRequest.set<Line>("DELETE", `/lines/${id}`);
+}
+
+export async function getLinesTotalPriceSummary(
+  params: GetLinesTotalPriceSummaryRequestParams
+) {
+  return await HttpRequest.get<
+    GetLinesTotalPriceSummaryResponseParams,
+    typeof params
+  >("/lines/total-price/summary", params);
 }

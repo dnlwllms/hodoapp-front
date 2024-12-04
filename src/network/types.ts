@@ -1,3 +1,8 @@
+export type PageProps<Params = unknown, SearchParams = unknown> = {
+  params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
+};
+
 export type CommonResponse<T = unknown> = {
   status: number;
   message: string;
@@ -64,4 +69,19 @@ export type PostAuthResponseParams = {
 export type PostAuthRequestParams = {
   email: string;
   password: string;
+};
+
+export type GetLinesTotalPriceSummaryRequestParams = {
+  startDate: string;
+  endDate: string;
+};
+
+export type GetLinesTotalPriceSummaryResponseParams = {
+  totalPrice: number;
+  results: {
+    id: number;
+    nickname: string;
+    email: string;
+    totalPrice: number;
+  }[];
 };

@@ -1,35 +1,67 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import { format, lastDayOfMonth } from "date-fns";
 
-import { useContext, useEffect, useRef, useState } from 'react';
-import { format, lastDayOfMonth } from 'date-fns';
+import Link from "next/link";
 
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { AlertContext } from './AlertProvider';
-import { ConfirmContext } from './ConfirmProvider';
-import { AddLineModalButton } from './AddLineModal';
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
-import { deleteLines, getLines, MutationKey, QueryKey } from '@/network/api';
-import getQueryClient from '@/network/getQueryClient';
+import {
+  deleteLines,
+  getLines,
+  getLinesTotalPriceSummary,
+  MutationKey,
+  QueryKey,
+} from "@/network/api";
+import getQueryClient from "@/network/getQueryClient";
 
-export default function LineList() {
+import useQueryFilter from "@/hooks/useQueryFilter";
+
+import { AlertContext } from "./AlertProvider";
+import { ConfirmContext } from "./ConfirmProvider";
+import { AddLineModalButton } from "./AddLineModal";
+
+type Props = {
+  searchParams: Record<string, unknown>;
+};
+
+export default function LineList(props: Props) {
   const { confirm } = useContext(ConfirmContext);
   const { showAlert } = useContext(AlertContext);
 
-  const today = new Date();
+  const parsedSearchParamSelectedDate = new Date(
+    String(props.searchParams.selectedDate)
+  );
+
+  const today = !Number.isNaN(parsedSearchParamSelectedDate.getTime())
+    ? parsedSearchParamSelectedDate
+    : new Date();
   const thisYear = today.getFullYear();
   const thisMonth = today.getMonth();
 
   const [selectedDate, setSelectedDate] = useState<Date>(
-    new Date(thisYear, thisMonth, 1),
+    new Date(thisYear, thisMonth, 1)
   );
 
-  const [tab, setTab] = useState(0);
+  const startDate = useMemo(() => selectedDate.toISOString(), [selectedDate]);
+  const endDate = useMemo(
+    () => lastDayOfMonth(selectedDate).toISOString(),
+    [selectedDate]
+  );
+
+  const [tab, setTab] = useState(
+    Number.isNaN(props.searchParams.tab) ? 0 : Number(props.searchParams.tab)
+  );
+
+  useQueryFilter({
+    tab,
+    selectedDate: selectedDate.toISOString(),
+  });
 
   const {
-    data: queryData,
+    data: linesData,
     isPending,
     isError,
     fetchNextPage,
@@ -39,8 +71,8 @@ export default function LineList() {
     queryFn: ({ pageParam }) =>
       getLines({
         page: pageParam,
-        startDate: selectedDate.toISOString(),
-        endDate: lastDayOfMonth(selectedDate).toISOString(),
+        startDate,
+        endDate,
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
@@ -48,6 +80,15 @@ export default function LineList() {
 
       return page < total / limit ? page + 1 : undefined;
     },
+  });
+
+  const { data: summaryData } = useQuery({
+    queryKey: [QueryKey.GetLinesTotalPriceSummary, selectedDate],
+    queryFn: () =>
+      getLinesTotalPriceSummary({
+        startDate,
+        endDate,
+      }),
   });
 
   const { mutateAsync: deleteLine } = useMutation({
@@ -77,12 +118,12 @@ export default function LineList() {
 
   const handleDelete = async (id: string) => {
     confirm({
-      message: '정말 삭제하시겠습니까?',
+      message: "정말 삭제하시겠습니까?",
       callback: async () => {
         try {
           await deleteLine(id);
 
-          showAlert({ type: 'success', message: '삭제되었습니다.' });
+          showAlert({ type: "success", message: "삭제되었습니다." });
 
           const queryClient = getQueryClient();
 
@@ -91,8 +132,8 @@ export default function LineList() {
           });
         } catch {
           showAlert({
-            type: 'error',
-            message: '내가 등록한 내역만 삭제할 수 있습니다.',
+            type: "error",
+            message: "내가 등록한 내역만 삭제할 수 있습니다.",
           });
         }
       },
@@ -123,18 +164,12 @@ export default function LineList() {
     );
   }
 
-  // TODO: TotalPrice API 개발 필요
-  // const totalPrice = queryData?.data?.list.reduce(
-  //   (prev, current) => prev + current.price,
-  //   0,
-  // );
-
   const renderByTab = () => {
     switch (tab) {
       case 0: {
         return (
           <ul className="flex flex-col gap-4 p-4">
-            {queryData?.pages.map(({ data: { list } }) => {
+            {linesData?.pages.map(({ data: { list } }) => {
               return list.map(({ id, description, date, price, creator }) => {
                 const parsedDate = new Date(date);
 
@@ -171,7 +206,7 @@ export default function LineList() {
                       <div className="flex gap-2 justify-end">
                         <div className="text-right text-gray-500">
                           <div>{creator.nickname}</div>
-                          <div>{format(parsedDate, 'yyyy-MM-dd')}</div>
+                          <div>{format(parsedDate, "yyyy-MM-dd")}</div>
                         </div>
                       </div>
                     </div>
@@ -184,44 +219,46 @@ export default function LineList() {
         );
       }
       case 1: {
-        // const groupByCreator = groupBy(
-        //   queryData.data.list,
-        //   (a) => a.creator.id,
-        // );
-        // const entries: [string, number][] = Object.values(groupByCreator).map(
-        //   (arr) => {
-        //     return [
-        //       arr[0].creator.nickname,
-        //       arr.reduce((prev, current) => prev + current.price, 0),
-        //     ];
-        //   },
-        // );
-        // const average = totalPrice / entries.length;
-        // return (
-        //   <div className="p-4">
-        //     <h3 className="text-xl font-bold mb-4">사용 금액</h3>
-        //     <div>
-        //       {entries.map(([name, price], index) => {
-        //         return (
-        //           <div key={index}>
-        //             {name}: {price.toLocaleString()}
-        //           </div>
-        //         );
-        //       })}
-        //     </div>
-        //     <p>인당 금액: {average.toLocaleString()}</p>
-        //     <h3 className="text-xl font-bold my-4">정산할 금액</h3>
-        //     {entries
-        //       .filter((entry) => entry[1] < average)
-        //       .map(([name, price], index) => {
-        //         return (
-        //           <div key={index}>
-        //             {name}: {(average - price).toLocaleString()}원
-        //           </div>
-        //         );
-        //       })}
-        //   </div>
-        // );
+        if (summaryData) {
+          const average = summaryData.data.totalPrice / 2;
+
+          const lessThenAverage = summaryData.data.results.filter(
+            ({ totalPrice }) => totalPrice < average
+          );
+
+          return (
+            <div className="p-4">
+              <h3 className="text-xl font-bold mb-4">사용 금액</h3>
+              <div>
+                {summaryData.data.results.map(
+                  ({ id, nickname, totalPrice }) => {
+                    return (
+                      <div key={id}>
+                        {nickname}: {totalPrice.toLocaleString()}
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+              <p>인당 금액: {average.toLocaleString()}</p>
+              {lessThenAverage.length > 0 && (
+                <>
+                  <h3 className="text-xl font-bold my-4">정산할 금액</h3>
+                  {summaryData.data.results
+                    .filter(({ totalPrice }) => totalPrice < average)
+                    .map(({ id, nickname, totalPrice }) => {
+                      return (
+                        <div key={id}>
+                          {nickname}: {(average - totalPrice).toLocaleString()}
+                          원
+                        </div>
+                      );
+                    })}
+                </>
+              )}
+            </div>
+          );
+        }
       }
     }
   };
@@ -237,7 +274,7 @@ export default function LineList() {
               const newDate = new Date(
                 Number(value),
                 selectedDate.getMonth(),
-                1,
+                1
               );
               setSelectedDate(newDate);
             }}
@@ -254,7 +291,7 @@ export default function LineList() {
               const newDate = new Date(
                 selectedDate.getFullYear(),
                 Number(value) - 1,
-                1,
+                1
               );
               setSelectedDate(newDate);
             }}
@@ -268,11 +305,17 @@ export default function LineList() {
       </div>
       <div className="stats stats-vertical shadow w-full">
         <div className="stat">
-          <div className="stat-title">총 사용금액</div>
-          {/* <div className="stat-value mb-1">{totalPrice.toLocaleString()}원</div> */}
+          {summaryData && (
+            <>
+              <div className="stat-title">총 사용금액</div>
+              <div className="stat-value mb-1">
+                {summaryData.data.totalPrice.toLocaleString()}원
+              </div>
+            </>
+          )}
           <div className="stat-desc">
-            {format(selectedDate, 'yyyy년 MM월 1일')} ~{' '}
-            {format(selectedDate, 'yyyy년 MM월')}{' '}
+            {format(selectedDate, "yyyy년 MM월 1일")} ~{" "}
+            {format(selectedDate, "yyyy년 MM월")}{" "}
             {lastDayOfMonth(selectedDate).getDate()}일
           </div>
         </div>
@@ -281,14 +324,14 @@ export default function LineList() {
       <div role="tablist" className="tabs tabs-bordered">
         <a
           role="tab"
-          className={`tab${tab === 0 ? ' tab-active' : ''}`}
+          className={`tab${tab === 0 ? " tab-active" : ""}`}
           onClick={() => setTab(0)}
         >
           목록
         </a>
         <a
           role="tab"
-          className={`tab${tab === 1 ? ' tab-active' : ''}`}
+          className={`tab${tab === 1 ? " tab-active" : ""}`}
           onClick={() => setTab(1)}
         >
           정산
