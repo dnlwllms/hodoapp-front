@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
-import { FormEvent, useContext, useState } from 'react';
+import { FormEvent, useContext, useState } from "react";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import getQueryClient from '@/network/getQueryClient';
-import { MutationKey, postLines, QueryKey } from '@/network/api';
+import getQueryClient from "@/network/getQueryClient";
+import { MutationKey, postLines, QueryKey } from "@/network/api";
 
-import { AlertContext } from './AlertProvider';
+import { AlertContext } from "./AlertProvider";
 
-const id = 'add_line_modal';
+const id = "add_line_modal";
 
-const handleDialog = (type: 'open' | 'close') => {
+const handleDialog = (type: "open" | "close") => {
   const dialog = document.getElementById(id);
 
   if (dialog instanceof HTMLDialogElement) {
     switch (type) {
-      case 'open': {
+      case "open": {
         dialog.showModal();
         break;
       }
-      case 'close': {
+      case "close": {
         dialog.close();
         break;
       }
@@ -33,7 +33,7 @@ const handleDialog = (type: 'open' | 'close') => {
 export default function AddLineModal() {
   const [date, setDate] = useState(new Date().toISOString());
   const [price, setPrice] = useState(1000);
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
 
   const { showAlert } = useContext(AlertContext);
 
@@ -47,8 +47,8 @@ export default function AddLineModal() {
 
     if (!date) {
       showAlert({
-        type: 'error',
-        message: '가계부 이름을 입력하세요.',
+        type: "error",
+        message: "가계부 이름을 입력하세요.",
       });
 
       return;
@@ -59,11 +59,11 @@ export default function AddLineModal() {
     (e.target as HTMLFormElement).reset();
 
     showAlert({
-      type: 'success',
-      message: '내역이 추가되었습니다.',
+      type: "success",
+      message: "내역이 추가되었습니다.",
     });
 
-    handleDialog('close');
+    handleDialog("close");
 
     const queryClient = getQueryClient();
 
@@ -84,7 +84,7 @@ export default function AddLineModal() {
             <input
               type="date"
               className="input input-bordered w-full max-w-xs"
-              value={format(new Date(date), 'yyyy-MM-dd')}
+              value={format(new Date(date), "yyyy-MM-dd")}
               onChange={({ target: { value } }) =>
                 setDate(new Date(value).toISOString())
               }
@@ -100,7 +100,7 @@ export default function AddLineModal() {
               className="input input-bordered w-full max-w-xs"
               value={price.toLocaleString()}
               onChange={({ target: { value } }) => {
-                const parsedValue = Number(value.replace(/,/g, ''));
+                const parsedValue = Number(value.replace(/,/g, ""));
 
                 if (!Number.isNaN(parsedValue)) {
                   setPrice(parsedValue);
@@ -122,7 +122,7 @@ export default function AddLineModal() {
             <button
               type="button"
               className="btn btn-ghost"
-              onClick={() => handleDialog('close')}
+              onClick={() => handleDialog("close")}
             >
               닫기
             </button>
@@ -138,8 +138,13 @@ export default function AddLineModal() {
 
 export function AddLineModalButton() {
   return (
-    <button onClick={() => handleDialog('open')} className="btn">
-      내역 추가 +
+    <button
+      onClick={() => handleDialog("open")}
+      className="btn rounded-full bg-gray-600 w-[60px] h-[60px]"
+    >
+      <svg width={32} height={32} color="#FDFDFD">
+        <use href="/icons/outlined/character.svg#Outlined/Character/plus" />
+      </svg>
     </button>
   );
 }

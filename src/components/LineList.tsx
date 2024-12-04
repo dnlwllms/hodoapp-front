@@ -22,6 +22,7 @@ import useQueryFilter from "@/hooks/useQueryFilter";
 import { AlertContext } from "./AlertProvider";
 import { ConfirmContext } from "./ConfirmProvider";
 import { AddLineModalButton } from "./AddLineModal";
+import Select from "./Select";
 
 type Props = {
   searchParams: Record<string, unknown>;
@@ -268,9 +269,8 @@ export default function LineList(props: Props) {
   return (
     <div className="mb-10">
       <div className="mb-4">
-        <div className="flex items-center">
-          <select
-            className="select"
+        <div className="flex items-center px-4 py-8 gap-[10px]">
+          <Select
             value={selectedDate.getFullYear()}
             onChange={({ target: { value } }) => {
               const newDate = new Date(
@@ -282,12 +282,14 @@ export default function LineList(props: Props) {
             }}
           >
             {[thisYear - 1, thisYear, thisYear + 1].map((value) => {
-              return <option key={value}>{value}</option>;
+              return (
+                <option key={value} value={value}>
+                  {value}년
+                </option>
+              );
             })}
-          </select>
-          년
-          <select
-            className="select"
+          </Select>
+          <Select
             value={selectedDate.getMonth() + 1}
             onChange={({ target: { value } }) => {
               const newDate = new Date(
@@ -299,37 +301,32 @@ export default function LineList(props: Props) {
             }}
           >
             {Array.from({ length: 12 }).map((_, index) => {
-              return <option key={index}>{index + 1}</option>;
+              return (
+                <option key={index} value={index + 1}>
+                  {index + 1}월
+                </option>
+              );
             })}
-          </select>
-          월
+          </Select>
         </div>
       </div>
-      <div className="stats stats-vertical shadow w-full">
-        <div className="stat">
-          {summaryData && (
-            <>
-              <div className="stat-title">총 사용금액</div>
-              <div className="stat-value mb-1">
-                {summaryData.data.totalPrice.toLocaleString()}원
-              </div>
-            </>
-          )}
-          <div className="stat-desc">
-            {format(selectedDate, "yyyy년 MM월 1일")} ~{" "}
-            {format(selectedDate, "yyyy년 MM월")}{" "}
-            {lastDayOfMonth(selectedDate).getDate()}일
-          </div>
-        </div>
+      <div className="px-4 pb-8">
+        {summaryData && (
+          <>
+            <div className="text-[16px] text-gray-100">총 사용 금액</div>
+            <div className="text-[28px] text-[#E1FF5A] font-bold">
+              {summaryData.data.totalPrice.toLocaleString()}원
+            </div>
+          </>
+        )}
       </div>
-
       <div role="tablist" className="tabs tabs-bordered">
         <a
           role="tab"
           className={`tab${tab === 0 ? " tab-active" : ""}`}
           onClick={() => setTab(0)}
         >
-          목록
+          사용내역
         </a>
         <a
           role="tab"
@@ -340,7 +337,7 @@ export default function LineList(props: Props) {
         </a>
       </div>
       {renderByTab()}
-      <div className="fixed bottom-24 right-4">
+      <div className="fixed bottom-[104px] right-4">
         <AddLineModalButton />
       </div>
     </div>

@@ -9,12 +9,23 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+    colors: {
+      gray: {
+        100: "#FDFDFD",
+        600: "#41474C",
+        700: "#2E363A",
       },
     },
   },
   plugins: [daisyui],
+  daisyui: {
+    // themes: [
+    //   {
+    //     mytheme: {
+    //       "--fallback-b1": "#171B1C",
+    //       "--fallback-bc": "#FDFDFD",
+    //     },
+    //   },
+    // ],
+  },
 } satisfies Config;
