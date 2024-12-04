@@ -3,7 +3,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import getQueryClient from "@/network/getQueryClient";
 import { getLines, QueryKey } from "@/network/api";
 import LineList from "@/components/LineList";
-import AddLineModal from "@/components/AddLineModal";
+
 import { PageProps } from "@/network/types";
 
 export default async function Page(
@@ -26,7 +26,6 @@ export default async function Page(
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <LineList searchParams={searchParams} />
-      <AddLineModal />
     </HydrationBoundary>
   );
 }

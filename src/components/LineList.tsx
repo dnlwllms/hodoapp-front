@@ -21,7 +21,7 @@ import useQueryFilter from "@/hooks/useQueryFilter";
 
 import { AlertContext } from "./AlertProvider";
 import { ConfirmContext } from "./ConfirmProvider";
-import { AddLineModalButton } from "./AddLineModal";
+import AddLineModal, { AddLineModalButton } from "./AddLineModal";
 import Select from "./Select";
 
 type Props = {
@@ -340,6 +340,7 @@ export default function LineList(props: Props) {
       <div className="fixed bottom-[104px] right-4">
         <AddLineModalButton />
       </div>
+      <AddLineModal />
     </div>
   );
 }

@@ -31,6 +31,14 @@ body {
   @apply h-[56px] text-[16px];
 }
 
+.tabs {
+  display: flex;
+}
+
+.tab {
+  width: 100%;
+}
+
 .tabs-bordered > .tab {
   @apply border-gray-600;
 
