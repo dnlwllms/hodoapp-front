@@ -70,6 +70,9 @@ export default function AddLineModal() {
     await queryClient.invalidateQueries({
       queryKey: [QueryKey.GetLines],
     });
+    await queryClient.invalidateQueries({
+      queryKey: [QueryKey.GetLinesTotalPriceSummary],
+    });
   };
 
   return (

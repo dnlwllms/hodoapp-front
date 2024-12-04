@@ -85,7 +85,7 @@ export default function LineList(props: Props) {
     },
   });
 
-  const { data: summaryData } = useQuery({
+  const { data: summaryData, refetch: refetchSummaryData } = useQuery({
     queryKey: [QueryKey.GetLinesTotalPriceSummary, selectedDate],
     queryFn: () =>
       getLinesTotalPriceSummary({
@@ -97,6 +97,7 @@ export default function LineList(props: Props) {
   const { mutateAsync: deleteLine } = useMutation({
     mutationKey: [MutationKey.DeleteLine],
     mutationFn: deleteLines,
+    onSuccess: () => refetchSummaryData(),
   });
 
   const liRef = useRef<HTMLLIElement>(null);
