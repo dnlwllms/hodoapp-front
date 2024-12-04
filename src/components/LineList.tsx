@@ -171,6 +171,12 @@ export default function LineList(props: Props) {
   const renderByTab = () => {
     switch (tab) {
       case 0: {
+        console.log(linesData);
+        if (linesData.pages[0].data.list.length === 0) {
+          return (
+            <div className="text-center py-[134px] whitespace-pre-wrap text-gray-600 text-[22px]">{`새로운 시작!\n이번달도 으쌰으쌰!`}</div>
+          );
+        }
         return (
           <ul className="flex flex-col gap-4 p-4">
             {linesData?.pages.map(({ data: { list } }) => {
@@ -178,17 +184,29 @@ export default function LineList(props: Props) {
                 const parsedDate = new Date(date);
 
                 return (
-                  <li key={id}>
-                    <div className="px-4 pt-2 pb-4">
+                  <li
+                    key={id}
+                    className="flex flex-col text-gray-100 gap-[10px] p-4 bg-gray-800 rounded-[10px]"
+                  >
+                    <div>
+                      <div className="text-gray-300 text-[14px]">
+                        {format(parsedDate, "yyyy-MM-dd")}
+                      </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-lg">{description}</span>
+                        <div className="text-lg font-bold text-[20px]">
+                          {price.toLocaleString()}원
+                        </div>
                         <div className="dropdown dropdown-end">
                           <div
                             tabIndex={0}
                             role="button"
                             className="btn btn-ghost btn-circle"
                           >
-                            <svg width={24} height={24}>
+                            <svg
+                              width={24}
+                              height={24}
+                              className="translate-x-5"
+                            >
                               <use href="/icons/outlined/edit.svg#Outlined/Edit/more-one" />
                             </svg>
                           </div>
@@ -204,14 +222,9 @@ export default function LineList(props: Props) {
                           </ul>
                         </div>
                       </div>
-                      <div className="text-lg font-bold">
-                        {price.toLocaleString()}원
-                      </div>
-                      <div className="flex gap-2 justify-end">
-                        <div className="text-right text-gray-500">
-                          <div>{creator.nickname}</div>
-                          <div>{format(parsedDate, "yyyy-MM-dd")}</div>
-                        </div>
+                      <div className="flex gap-2 justify-between text-gray-300 text-[16px]">
+                        <span>{description}</span>
+                        <span>{creator.nickname}</span>
                       </div>
                     </div>
                   </li>
