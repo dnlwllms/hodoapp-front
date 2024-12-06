@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import AlertProvider from "@/components/AlertProvider";
-import BottomNavigation from "@/components/BottomNavigation";
 import ConfirmProvider from "@/components/ConfirmProvider";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 
@@ -17,6 +16,12 @@ const geistSans = localFont({
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
+const pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
+  variable: "--font-pretendard",
   weight: "100 900",
 });
 
@@ -34,13 +39,10 @@ export default async function RootLayout({
     <ReactQueryProvider>
       <html lang="ko">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${pretendard.variable} antialiased`}
         >
           <AlertProvider>
-            <ConfirmProvider>
-              {children}
-              <BottomNavigation />
-            </ConfirmProvider>
+            <ConfirmProvider>{children}</ConfirmProvider>
           </AlertProvider>
         </body>
       </html>

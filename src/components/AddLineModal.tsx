@@ -20,6 +20,7 @@ const handleDialog = (type: "open" | "close") => {
     switch (type) {
       case "open": {
         dialog.showModal();
+        document.getElementById("add-line-form-price")?.focus();
         break;
       }
       case "close": {
@@ -77,59 +78,74 @@ export default function AddLineModal() {
 
   return (
     <dialog id={id} className="modal">
-      <div className="modal-box">
+      <div className="modal-box bg-gray-900">
         <form onSubmit={handleSubmit}>
-          <h3 className="text-lg font-bold">내역 추가</h3>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">날짜</span>
-            </div>
-            <input
-              type="date"
-              className="input input-bordered w-full max-w-xs"
-              value={format(new Date(date), "yyyy-MM-dd")}
-              onChange={({ target: { value } }) =>
-                setDate(new Date(value).toISOString())
-              }
-            />
-          </label>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">금액</span>
-            </div>
-            <input
-              type="text"
-              inputMode="numeric"
-              className="input input-bordered w-full max-w-xs"
-              value={price.toLocaleString()}
-              onChange={({ target: { value } }) => {
-                const parsedValue = Number(value.replace(/,/g, ""));
-
-                if (!Number.isNaN(parsedValue)) {
-                  setPrice(parsedValue);
-                }
-              }}
-            />
-          </label>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">메모</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              onChange={({ target: { value } }) => setDescription(value)}
-            />
-          </label>
-          <div className="modal-action">
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => handleDialog("close")}
-            >
-              닫기
+          <div className="flex justify-end">
+            <button type="button" onClick={() => handleDialog("close")}>
+              <svg width={24} height={24} color="#FDFDFD">
+                <use href="/icons/outlined/character.svg#Outlined/Character/close-small" />
+              </svg>
             </button>
-            <button type="submit" className="btn" disabled={isPending}>
+          </div>
+          <div className="flex flex-col gap-8">
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">날짜</span>
+              </div>
+              <input
+                id="add-line-form-date"
+                name="date"
+                type="date"
+                className="input input-bordered w-full max-w-xs"
+                value={format(new Date(date), "yyyy-MM-dd")}
+                autoFocus={false}
+                onChange={({ target: { value } }) =>
+                  setDate(new Date(value).toISOString())
+                }
+              />
+            </label>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">사용 금액</span>
+              </div>
+              <input
+                id="add-line-form-price"
+                name="price"
+                type="text"
+                inputMode="numeric"
+                className="input input-bordered w-full max-w-xs"
+                value={price.toLocaleString()}
+                onChange={({ target: { value } }) => {
+                  const parsedValue = Number(value.replace(/,/g, ""));
+
+                  if (!Number.isNaN(parsedValue)) {
+                    setPrice(parsedValue);
+                  }
+                }}
+                onFocus={(e) => {
+                  e.target.select();
+                }}
+              />
+            </label>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">내용</span>
+              </div>
+              <input
+                id="add-line-form-description"
+                name="description"
+                type="text"
+                className="input input-bordered w-full max-w-xs"
+                onChange={({ target: { value } }) => setDescription(value)}
+              />
+            </label>
+          </div>
+          <div className="modal-action mt-8">
+            <button
+              type="submit"
+              className="btn w-full bg-gray-100 text-gray-900"
+              disabled={isPending}
+            >
               추가
             </button>
           </div>

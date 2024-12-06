@@ -353,7 +353,7 @@ export default function LineList(props: Props) {
         </a>
       </div>
       {renderByTab()}
-      <div className="fixed bottom-[104px] right-4">
+      <div className="fixed bottom-8 right-4">
         <AddLineModalButton />
       </div>
       <AddLineModal />
