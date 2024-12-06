@@ -85,3 +85,13 @@ export type GetLinesTotalPriceSummaryResponseParams = {
     totalPrice: number;
   }[];
 };
+
+export type GetDailyPriceSummaryRequestParams = {
+  startDate: string;
+  endDate: string;
+};
+
+export type GetDailyPriceSummaryResponseParams = {
+  price: number;
+  date: string;
+}[];

@@ -11,12 +11,15 @@ import {
   PutLineRequestParams,
   GetLinesTotalPriceSummaryResponseParams,
   GetLinesTotalPriceSummaryRequestParams,
+  GetDailyPriceSummaryRequestParams,
+  GetDailyPriceSummaryResponseParams,
 } from "./types";
 
 export enum QueryKey {
   GetAuth,
   GetLines,
   GetLinesTotalPriceSummary,
+  GetLinesDailyPriceSummary,
 }
 
 export enum MutationKey {
@@ -67,4 +70,13 @@ export async function getLinesTotalPriceSummary(
     GetLinesTotalPriceSummaryResponseParams,
     typeof params
   >("/lines/total-price/summary", params);
+}
+
+export async function getLinesDailyPriceSummary(
+  params: GetDailyPriceSummaryRequestParams
+) {
+  return await HttpRequest.get<
+    GetDailyPriceSummaryResponseParams,
+    typeof params
+  >("/lines/daily-price/summary", params);
 }
