@@ -14,6 +14,7 @@ type Props = {
 const dates = Array.from({ length: 31 }).map((_, index) => index + 1);
 
 export default function PriceChart(props: Props) {
+  console.log(props);
   useEffect(() => {
     const ctx = document.getElementById("chart");
     if (ctx instanceof HTMLCanvasElement) {
