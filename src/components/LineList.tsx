@@ -127,11 +127,14 @@ export default function LineList(props: Props) {
       );
 
       const last = getChartData(lastDailyPriceSummaryData.data).filter(
-        ({ x }) => x <= todayDate
+        ({ x }) => {
+          console.log(x, todayDate);
+          return x <= todayDate;
+        }
       );
 
       return (
-        (last[last.length - 1].y || 0) - (current[current.length - 1].y || 0)
+        (current[current.length - 1].y || 0) - (last[last.length - 1].y || 0)
       );
     }
 
