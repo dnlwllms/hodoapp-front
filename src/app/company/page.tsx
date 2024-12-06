@@ -14,7 +14,6 @@ export default function Page() {
     const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/company`);
 
     socket.on("front", (...message) => {
-      console.log(message);
       switch (message[0]) {
         case "checkin-success": {
           setCheckInTime(message[1]);
@@ -82,7 +81,10 @@ export default function Page() {
         >
           출근
         </button>
-        <button className="flex-1 btn btn-error bg-red-500" onClick={handleCheckOut}>
+        <button
+          className="flex-1 btn btn-error bg-red-500"
+          onClick={handleCheckOut}
+        >
           퇴근
         </button>
       </div>

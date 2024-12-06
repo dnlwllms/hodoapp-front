@@ -118,8 +118,6 @@ export default function LineList(props: Props) {
       }),
   });
 
-  console.log(startDate, endDate, lastStartDate, lastEndDate);
-
   const diffPrice = useMemo(() => {
     if (currentDailyPriceSummaryData && lastDailyPriceSummaryData) {
       const todayDate = new Date().getDate();
