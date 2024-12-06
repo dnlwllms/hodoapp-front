@@ -118,6 +118,8 @@ export default function LineList(props: Props) {
       }),
   });
 
+  console.log(startDate, endDate, lastStartDate, lastEndDate);
+
   const diffPrice = useMemo(() => {
     if (currentDailyPriceSummaryData && lastDailyPriceSummaryData) {
       const todayDate = new Date().getDate();
@@ -215,7 +217,6 @@ export default function LineList(props: Props) {
   const renderByTab = () => {
     switch (tab) {
       case 0: {
-        console.log(linesData);
         if (linesData.pages[0].data.list.length === 0) {
           return (
             <div className="text-center py-[134px] whitespace-pre-wrap text-gray-600 text-[22px]">{`새로운 시작!\n이번달도 으쌰으쌰!`}</div>
