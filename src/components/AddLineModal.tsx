@@ -74,6 +74,9 @@ export default function AddLineModal() {
     await queryClient.invalidateQueries({
       queryKey: [QueryKey.GetLinesTotalPriceSummary],
     });
+    await queryClient.invalidateQueries({
+      queryKey: [QueryKey.GetLinesDailyPriceSummary],
+    });
   };
 
   return (
