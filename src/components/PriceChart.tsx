@@ -20,13 +20,17 @@ export default function PriceChart(props: Props) {
       const borderWidth = 2;
       const tension = 0.3;
 
+      const todayDate = new Date().getDate();
+
       const chart = new Chart(ctx, {
         type: "line",
         data: {
           labels: dates,
           datasets: [
             {
-              data: getChartData(props.current),
+              data: getChartData(props.current).filter(
+                ({ x }) => x <= new Date().getDate()
+              ),
               tension,
               borderColor: "#E1FF5A",
               borderWidth,
@@ -62,7 +66,7 @@ export default function PriceChart(props: Props) {
             point: {
               pointStyle: (ctx) => {
                 if (ctx.datasetIndex === 0) {
-                  if (props.current.length - 1 === ctx.dataIndex) {
+                  if (todayDate - 1 === ctx.dataIndex) {
                     return "circle";
                   }
                 }
