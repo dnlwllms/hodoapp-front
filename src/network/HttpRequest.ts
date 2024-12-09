@@ -33,18 +33,18 @@ export default class HttpRequest {
   ) {
     let url = this.baseUrl + uri;
 
-    if (typeof document !== "undefined") {
-      const accessToken = parseCookie(document.cookie).get("accessToken");
+    let authorization = "";
 
-      if (accessToken) {
-        this.defaultHeaders.Authorization = `Bearer ${accessToken}`;
-      }
+    if (typeof document !== "undefined") {
+      authorization = `Bearer ${parseCookie(document.cookie).get(
+        "accessToken"
+      )}`;
     }
 
     url += `?${queryString.stringify(bodyData as queryString.ParsedQuery)}`;
 
     if (headerData?.Authorization) {
-      this.defaultHeaders.Authorization = headerData.Authorization;
+      authorization = headerData.Authorization;
     }
 
     const response = await fetch(url, {
@@ -53,6 +53,7 @@ export default class HttpRequest {
       headers: {
         ...this.defaultHeaders,
         ...headerData,
+        Authorization: authorization,
       },
     });
 
@@ -71,10 +72,56 @@ export default class HttpRequest {
       headers: {
         ...this.defaultHeaders,
         ...headerData,
+        Authorization: `Bearer ${parseCookie(document.cookie).get(
+          "accessToken"
+        )}`,
       },
       body: JSON.stringify(bodyData),
     });
 
     return await this.responseToJson<Res>(response);
+  }
+
+  static async upload(formData: FormData) {
+    const response = await fetch(this.baseUrl + "/aws/upload", {
+      method: "POST",
+      credentials: this.credentials,
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${parseCookie(document.cookie).get(
+          "accessToken"
+        )}`,
+      },
+    });
+
+    return await this.responseToJson<{ key: string; url: string }>(response);
+  }
+
+  static async download(key: string) {
+    const response = await fetch(this.baseUrl + "/aws/download/" + key, {
+      method: "GET",
+      credentials: this.credentials,
+      headers: {
+        Authorization: `Bearer ${parseCookie(document.cookie).get(
+          "accessToken"
+        )}`,
+      },
+    });
+
+    return await this.responseToJson<string>(response);
+  }
+
+  static async delete(key: string) {
+    const response = await fetch(this.baseUrl + "/aws/upload/" + key, {
+      method: "DELETE",
+      credentials: this.credentials,
+      headers: {
+        Authorization: `Bearer ${parseCookie(document.cookie).get(
+          "accessToken"
+        )}`,
+      },
+    });
+
+    return await this.responseToJson<string>(response);
   }
 }

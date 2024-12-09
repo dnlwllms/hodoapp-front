@@ -80,3 +80,14 @@ export async function getLinesDailyPriceSummary(
     typeof params
   >("/lines/daily-price/summary", params);
 }
+
+export async function postAWSUpload(formData: FormData) {
+  const {
+    data: { key, url },
+  } = await HttpRequest.upload(formData);
+
+  return {
+    key,
+    url,
+  };
+}
