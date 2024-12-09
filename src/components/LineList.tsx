@@ -370,6 +370,8 @@ const SummaryArea = memo(function SummaryArea(props: {
   endDate: string;
   totalPrice?: number;
 }) {
+  const thisMonth = new Date().getMonth();
+
   const lastDate = addMonths(props.selectedDate, -1);
 
   const lastStartDate = useMemo(() => lastDate.toISOString(), [lastDate]);
@@ -429,16 +431,18 @@ const SummaryArea = memo(function SummaryArea(props: {
             </div>
           </div>
         )}
-        <div className="w-[120px]">
-          {currentDailyPriceSummaryData && lastDailyPriceSummaryData && (
-            <PriceChart
-              current={currentDailyPriceSummaryData.data}
-              last={lastDailyPriceSummaryData.data}
-            />
-          )}
-        </div>
+        {thisMonth === props.selectedDate.getMonth() && (
+          <div className="w-[120px]">
+            {currentDailyPriceSummaryData && lastDailyPriceSummaryData && (
+              <PriceChart
+                current={currentDailyPriceSummaryData.data}
+                last={lastDailyPriceSummaryData.data}
+              />
+            )}
+          </div>
+        )}
       </div>
-      {diffPrice !== 0 && (
+      {thisMonth === props.selectedDate.getMonth() && diffPrice !== 0 && (
         <p className="text-gray-100">
           지난 달 보다{" "}
           <b className="text-[#E1FF5A]">
