@@ -4,7 +4,7 @@ import { addMonths, format, lastDayOfMonth } from "date-fns";
 
 import Link from "next/link";
 
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
@@ -96,50 +96,6 @@ export default function LineList(props: Props) {
       }),
   });
 
-  const lastDate = addMonths(selectedDate, -1);
-
-  const lastStartDate = useMemo(() => lastDate.toISOString(), [lastDate]);
-  const lastEndDate = useMemo(
-    () => lastDayOfMonth(lastDate).toISOString(),
-    [lastDate]
-  );
-
-  const { data: currentDailyPriceSummaryData } = useQuery({
-    queryKey: [QueryKey.GetLinesDailyPriceSummary, selectedDate],
-    queryFn: () => getLinesDailyPriceSummary({ startDate, endDate }),
-  });
-
-  const { data: lastDailyPriceSummaryData } = useQuery({
-    queryKey: [QueryKey.GetLinesDailyPriceSummary, lastDate],
-    queryFn: () =>
-      getLinesDailyPriceSummary({
-        startDate: lastStartDate,
-        endDate: lastEndDate,
-      }),
-  });
-
-  const diffPrice = useMemo(() => {
-    if (currentDailyPriceSummaryData && lastDailyPriceSummaryData) {
-      const todayDate = new Date().getDate();
-
-      const current = getChartData(currentDailyPriceSummaryData?.data).filter(
-        ({ x }) => x <= todayDate
-      );
-
-      const last = getChartData(lastDailyPriceSummaryData.data).filter(
-        ({ x }) => {
-          return x <= todayDate;
-        }
-      );
-
-      return (
-        (current[current.length - 1].y || 0) - (last[last.length - 1].y || 0)
-      );
-    }
-
-    return 0;
-  }, [currentDailyPriceSummaryData, lastDailyPriceSummaryData]);
-
   const { mutateAsync: deleteLine } = useMutation({
     mutationKey: [MutationKey.DeleteLine],
     mutationFn: deleteLines,
@@ -179,6 +135,12 @@ export default function LineList(props: Props) {
 
           await queryClient.invalidateQueries({
             queryKey: [QueryKey.GetLines],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: [QueryKey.GetLinesDailyPriceSummary],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: [QueryKey.GetLinesTotalPriceSummary],
           });
         } catch {
           showAlert({
@@ -371,36 +333,12 @@ export default function LineList(props: Props) {
           </Select>
         </div>
       </div>
-      <div className="px-4 pb-8">
-        {summaryData && (
-          <div className="flex justify-between">
-            <div>
-              <div className="text-[16px] text-gray-100">총 사용 금액</div>
-              <div className="text-[28px] text-[#E1FF5A] font-bold">
-                {summaryData.data.totalPrice.toLocaleString()}원
-              </div>
-            </div>
-            <div className="w-[120px]">
-              {currentDailyPriceSummaryData && lastDailyPriceSummaryData && (
-                <PriceChart
-                  current={currentDailyPriceSummaryData.data}
-                  last={lastDailyPriceSummaryData.data}
-                />
-              )}
-            </div>
-          </div>
-        )}
-        {diffPrice !== 0 && (
-          <p className="text-gray-100">
-            지난 달 보다{" "}
-            <b className="text-[#E1FF5A]">
-              {Math.abs(diffPrice).toLocaleString()}원{" "}
-              {diffPrice > 0 ? "더" : "덜"}
-            </b>{" "}
-            쓰는 중
-          </p>
-        )}
-      </div>
+      <SummaryArea
+        selectedDate={selectedDate}
+        startDate={startDate}
+        endDate={endDate}
+        totalPrice={summaryData?.data.totalPrice}
+      />
       <div role="tablist" className="tabs tabs-bordered">
         <a
           role="tab"
@@ -425,3 +363,91 @@ export default function LineList(props: Props) {
     </div>
   );
 }
+
+const SummaryArea = memo(function SummaryArea(props: {
+  selectedDate: Date;
+  startDate: string;
+  endDate: string;
+  totalPrice?: number;
+}) {
+  const lastDate = addMonths(props.selectedDate, -1);
+
+  const lastStartDate = useMemo(() => lastDate.toISOString(), [lastDate]);
+  const lastEndDate = useMemo(
+    () => lastDayOfMonth(lastDate).toISOString(),
+    [lastDate]
+  );
+
+  const { data: currentDailyPriceSummaryData } = useQuery({
+    queryKey: [QueryKey.GetLinesDailyPriceSummary, props.selectedDate],
+    queryFn: () =>
+      getLinesDailyPriceSummary({
+        startDate: props.startDate,
+        endDate: props.endDate,
+      }),
+  });
+
+  const { data: lastDailyPriceSummaryData } = useQuery({
+    queryKey: [QueryKey.GetLinesDailyPriceSummary, lastDate],
+    queryFn: () =>
+      getLinesDailyPriceSummary({
+        startDate: lastStartDate,
+        endDate: lastEndDate,
+      }),
+  });
+
+  const diffPrice = useMemo(() => {
+    if (currentDailyPriceSummaryData && lastDailyPriceSummaryData) {
+      const todayDate = new Date().getDate();
+
+      const current = getChartData(currentDailyPriceSummaryData?.data).filter(
+        ({ x }) => x <= todayDate
+      );
+
+      const last = getChartData(lastDailyPriceSummaryData.data).filter(
+        ({ x }) => {
+          return x <= todayDate;
+        }
+      );
+
+      return (
+        (current[current.length - 1].y || 0) - (last[last.length - 1].y || 0)
+      );
+    }
+
+    return 0;
+  }, [currentDailyPriceSummaryData, lastDailyPriceSummaryData]);
+
+  return (
+    <div className="px-4 pb-8">
+      <div className="flex justify-between">
+        {typeof props.totalPrice === "number" && (
+          <div>
+            <div className="text-[16px] text-gray-100">총 사용 금액</div>
+            <div className="text-[28px] text-[#E1FF5A] font-bold">
+              {props.totalPrice.toLocaleString()}원
+            </div>
+          </div>
+        )}
+        <div className="w-[120px]">
+          {currentDailyPriceSummaryData && lastDailyPriceSummaryData && (
+            <PriceChart
+              current={currentDailyPriceSummaryData.data}
+              last={lastDailyPriceSummaryData.data}
+            />
+          )}
+        </div>
+      </div>
+      {diffPrice !== 0 && (
+        <p className="text-gray-100">
+          지난 달 보다{" "}
+          <b className="text-[#E1FF5A]">
+            {Math.abs(diffPrice).toLocaleString()}원{" "}
+            {diffPrice > 0 ? "더" : "덜"}
+          </b>{" "}
+          쓰는 중
+        </p>
+      )}
+    </div>
+  );
+});
