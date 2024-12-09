@@ -128,7 +128,6 @@ export default function LineList(props: Props) {
 
       const last = getChartData(lastDailyPriceSummaryData.data).filter(
         ({ x }) => {
-          console.log(x, todayDate);
           return x <= todayDate;
         }
       );

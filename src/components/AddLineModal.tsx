@@ -32,7 +32,7 @@ const handleDialog = (type: "open" | "close") => {
 };
 
 export default function AddLineModal() {
-  const [date, setDate] = useState(new Date().toISOString());
+  const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [price, setPrice] = useState(1000);
   const [description, setDescription] = useState("");
 
@@ -97,11 +97,9 @@ export default function AddLineModal() {
                 name="date"
                 type="date"
                 className="input input-bordered w-full max-w-xs"
-                value={format(new Date(date), "yyyy-MM-dd")}
+                value={date}
                 autoFocus={false}
-                onChange={({ target: { value } }) =>
-                  setDate(new Date(value).toISOString())
-                }
+                onChange={({ target: { value } }) => setDate(value)}
               />
             </label>
             <label className="form-control w-full max-w-xs">

@@ -18,7 +18,7 @@ export default function PriceChart(props: Props) {
     const ctx = document.getElementById("chart");
     if (ctx instanceof HTMLCanvasElement) {
       const borderWidth = 2;
-      const tension = 0.2;
+      const tension = 0.3;
 
       const chart = new Chart(ctx, {
         type: "line",
@@ -49,6 +49,10 @@ export default function PriceChart(props: Props) {
           ],
         },
         options: {
+          interaction: {
+            mode: "index",
+            intersect: true,
+          },
           plugins: {
             legend: {
               display: false,
