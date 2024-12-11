@@ -309,8 +309,21 @@ export default function LineList(props: Props) {
 
   return (
     <div className="mb-10">
-      <div className="mb-4">
-        <div className="flex items-center px-4 py-8 gap-[10px]">
+      <div className="flex items-center justify-between mb-4 px-4 py-8">
+        <div className="w-6 h-6">
+          <svg
+            width={24}
+            height={24}
+            onClick={() => {
+              setSelectedDate((prev) => {
+                return addMonths(prev, -1);
+              });
+            }}
+          >
+            <use href="/icons/outlined/arrows.svg#Outlined/Arrows/left" />
+          </svg>
+        </div>
+        <div className="flex items-center gap-[10px]">
           <Select
             value={selectedDate.getFullYear()}
             onChange={({ target: { value } }) => {
@@ -349,6 +362,18 @@ export default function LineList(props: Props) {
               );
             })}
           </Select>
+        </div>
+        <div
+          className="w-6 h-6"
+          onClick={() => {
+            setSelectedDate((prev) => {
+              return addMonths(prev, 1);
+            });
+          }}
+        >
+          <svg width={24} height={24}>
+            <use href="/icons/outlined/arrows.svg#Outlined/Arrows/right" />
+          </svg>
         </div>
       </div>
       <SummaryArea
@@ -461,7 +486,7 @@ const SummaryArea = memo(function SummaryArea(props: {
     } else {
       return (
         <p className="text-gray-100">
-          {props.selectedDate.getMonth()}월 보다{" "}
+          {props.selectedDate.getMonth() || 12}월 보다{" "}
           <b className="text-[#E1FF5A]">
             {Math.abs(diffPrice).toLocaleString()}원{" "}
             {diffPrice > 0 ? "더" : "덜"}
