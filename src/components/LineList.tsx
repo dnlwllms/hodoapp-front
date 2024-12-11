@@ -513,7 +513,7 @@ const SummaryArea = memo(function SummaryArea(props: {
             <PriceChart
               current={currentDailyPriceSummaryData.data}
               last={lastDailyPriceSummaryData.data}
-              isThisMonth={isThisMonth}
+              selectedDate={props.selectedDate}
             />
           )}
         </div>

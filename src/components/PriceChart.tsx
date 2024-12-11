@@ -1,20 +1,31 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import Chart, { ChartArea } from "chart.js/auto";
 
 import { GetDailyPriceSummaryResponseParams } from "@/network/types";
+import { format, isBefore } from "date-fns";
 
 type Props = {
   current: GetDailyPriceSummaryResponseParams;
   last: GetDailyPriceSummaryResponseParams;
-  isThisMonth?: boolean;
+  selectedDate: Date;
 };
 
 const dates = Array.from({ length: 31 }).map((_, index) => index + 1);
 
 export default function PriceChart(props: Props) {
+  const isThisMonth = useMemo(
+    () => format(new Date(), "yyyyMM") === format(props.selectedDate, "yyyyMM"),
+    [props.selectedDate]
+  );
+
+  const isBeforeDate = isBefore(
+    format(props.selectedDate, "yyyyMM"),
+    format(new Date(), "yyyyMM")
+  );
+
   useEffect(() => {
     const ctx = document.getElementById("chart");
     if (ctx instanceof HTMLCanvasElement) {
@@ -29,9 +40,15 @@ export default function PriceChart(props: Props) {
           labels: dates,
           datasets: [
             {
-              data: getChartData(props.current).filter(
-                ({ x }) => !props.isThisMonth || x <= new Date().getDate()
-              ),
+              data: getChartData(props.current).filter(({ x }) => {
+                if (isBeforeDate) {
+                  return true;
+                } else if (isThisMonth) {
+                  return x <= new Date().getDate();
+                } else {
+                  return false;
+                }
+              }),
               tension,
               borderColor: "#E1FF5A",
               borderWidth,
@@ -68,7 +85,7 @@ export default function PriceChart(props: Props) {
               pointStyle: (ctx) => {
                 if (ctx.datasetIndex === 0) {
                   if (
-                    (props.isThisMonth
+                    (isThisMonth
                       ? today.getDate() - 1
                       : props.current.length - 1) === ctx.dataIndex
                   ) {
@@ -97,7 +114,7 @@ export default function PriceChart(props: Props) {
         chart.destroy();
       };
     }
-  }, [props]);
+  }, [isBeforeDate, isThisMonth, props]);
 
   return <canvas id="chart" />;
 }
