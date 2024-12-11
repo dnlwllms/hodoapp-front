@@ -2,7 +2,13 @@
 
 import { format } from "date-fns";
 
-import { FormEvent, useContext, useState } from "react";
+import {
+  cloneElement,
+  FormEvent,
+  ReactElement,
+  useContext,
+  useState,
+} from "react";
 
 import { useMutation } from "@tanstack/react-query";
 
@@ -36,6 +42,12 @@ export default function AddLineModal() {
   const [price, setPrice] = useState(1000);
   const [description, setDescription] = useState("");
 
+  const handleReset = () => {
+    setDate(format(new Date(), "yyyy-MM-dd"));
+    setPrice(1000);
+    setDescription("");
+  };
+
   const { showAlert } = useContext(AlertContext);
 
   const { mutateAsync, isPending } = useMutation({
@@ -49,7 +61,7 @@ export default function AddLineModal() {
     if (!date) {
       showAlert({
         type: "error",
-        message: "가계부 이름을 입력하세요.",
+        message: "날짜를 선택하세요.",
       });
 
       return;
@@ -57,7 +69,7 @@ export default function AddLineModal() {
 
     await mutateAsync({ date, description, price });
 
-    (e.target as HTMLFormElement).reset();
+    handleReset();
 
     showAlert({
       type: "success",
@@ -137,6 +149,7 @@ export default function AddLineModal() {
                 name="description"
                 type="text"
                 className="input input-bordered w-full max-w-xs"
+                value={description}
                 onChange={({ target: { value } }) => setDescription(value)}
               />
             </label>
@@ -156,15 +169,13 @@ export default function AddLineModal() {
   );
 }
 
-export function AddLineModalButton() {
-  return (
-    <button
-      onClick={() => handleDialog("open")}
-      className="btn rounded-full bg-gray-600 w-[60px] h-[60px]"
-    >
-      <svg width={32} height={32} color="#FDFDFD">
-        <use href="/icons/outlined/character.svg#Outlined/Character/plus" />
-      </svg>
-    </button>
-  );
-}
+AddLineModal.Open = function Open({ children }: { children: ReactElement }) {
+  return cloneElement(children, {
+    onClick: () => {
+      if (children.props.onClick) {
+        children.props.onClick();
+      }
+      handleDialog("open");
+    },
+  });
+};

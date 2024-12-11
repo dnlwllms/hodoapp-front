@@ -7,6 +7,7 @@ import ConfirmProvider from "@/components/ConfirmProvider";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 
 import "./globals.css";
+import UserProvider from "@/components/UserProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,9 +42,11 @@ export default async function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${pretendard.variable} antialiased`}
         >
-          <AlertProvider>
-            <ConfirmProvider>{children}</ConfirmProvider>
-          </AlertProvider>
+          <UserProvider>
+            <AlertProvider>
+              <ConfirmProvider>{children}</ConfirmProvider>
+            </AlertProvider>
+          </UserProvider>
         </body>
       </html>
     </ReactQueryProvider>

@@ -22,17 +22,20 @@ import useQueryFilter from "@/hooks/useQueryFilter";
 
 import { AlertContext } from "./AlertProvider";
 import { ConfirmContext } from "./ConfirmProvider";
-import AddLineModal, { AddLineModalButton } from "./AddLineModal";
+import AddLineModal from "./AddLineModal";
 import Select from "./Select";
 import PriceChart, { getChartData } from "./PriceChart";
+import EditLineModal from "./EditLineModal";
+import { UserContext } from "./UserProvider";
 
 type Props = {
   searchParams: Record<string, unknown>;
 };
 
 export default function LineList(props: Props) {
-  const { confirm } = useContext(ConfirmContext);
   const { showAlert } = useContext(AlertContext);
+  const { confirm } = useContext(ConfirmContext);
+  const user = useContext(UserContext);
 
   const parsedSearchParamSelectedDate = new Date(
     String(props.searchParams.selectedDate)
@@ -59,6 +62,8 @@ export default function LineList(props: Props) {
       ? Number(props.searchParams.tab)
       : 0
   );
+
+  const [modifyId, setModifyId] = useState<number>();
 
   useQueryFilter({
     tab,
@@ -122,7 +127,7 @@ export default function LineList(props: Props) {
     };
   }, [fetchNextPage, hasNextPage]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     confirm({
       message: "정말 삭제하시겠습니까?",
       callback: async () => {
@@ -189,7 +194,6 @@ export default function LineList(props: Props) {
             {linesData?.pages.map(({ data: { list } }) => {
               return list.map(({ id, description, date, price, creator }) => {
                 const parsedDate = new Date(date);
-
                 return (
                   <li
                     key={id}
@@ -199,35 +203,49 @@ export default function LineList(props: Props) {
                       <div className="text-gray-300 text-[14px]">
                         {format(parsedDate, "yyyy-MM-dd")}
                       </div>
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center h-12">
                         <div className="text-lg font-bold text-[20px]">
                           {price.toLocaleString()}원
                         </div>
-                        <div className="dropdown dropdown-end">
-                          <div
-                            tabIndex={0}
-                            role="button"
-                            className="btn btn-ghost btn-circle"
-                          >
-                            <svg
-                              width={24}
-                              height={24}
-                              className="translate-x-5"
+                        {user && user.id === creator.id && (
+                          <div className="dropdown dropdown-end">
+                            <div
+                              tabIndex={0}
+                              role="button"
+                              className="btn btn-ghost btn-circle"
                             >
-                              <use href="/icons/outlined/edit.svg#Outlined/Edit/more-one" />
-                            </svg>
-                          </div>
-                          <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-24 p-2 shadow">
-                            <li>
-                              <button
-                                tabIndex={1}
-                                onClick={() => handleDelete(id.toString())}
+                              <svg
+                                width={24}
+                                height={24}
+                                className="translate-x-5"
                               >
-                                삭제
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
+                                <use href="/icons/outlined/edit.svg#Outlined/Edit/more-one" />
+                              </svg>
+                            </div>
+                            <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-24 p-2 shadow">
+                              <li>
+                                <EditLineModal.Open>
+                                  <button
+                                    tabIndex={1}
+                                    onClick={() => {
+                                      setModifyId(id);
+                                    }}
+                                  >
+                                    수정
+                                  </button>
+                                </EditLineModal.Open>
+                              </li>
+                              <li>
+                                <button
+                                  tabIndex={2}
+                                  onClick={() => handleDelete(id)}
+                                >
+                                  삭제
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
                       </div>
                       <div className="flex gap-2 justify-between text-gray-300 text-[16px]">
                         <span>{description}</span>
@@ -357,9 +375,16 @@ export default function LineList(props: Props) {
       </div>
       {renderByTab()}
       <div className="fixed bottom-8 right-4">
-        <AddLineModalButton />
+        <AddLineModal.Open>
+          <button className="btn rounded-full bg-gray-600 w-[60px] h-[60px]">
+            <svg width={32} height={32} color="#FDFDFD">
+              <use href="/icons/outlined/character.svg#Outlined/Character/plus" />
+            </svg>
+          </button>
+        </AddLineModal.Open>
       </div>
       <AddLineModal />
+      <EditLineModal id={modifyId} onClose={() => setModifyId(undefined)} />
     </div>
   );
 }

@@ -17,6 +17,7 @@ import {
 
 export enum QueryKey {
   GetAuth,
+  GetLine,
   GetLines,
   GetLinesTotalPriceSummary,
   GetLinesDailyPriceSummary,
@@ -25,6 +26,7 @@ export enum QueryKey {
 export enum MutationKey {
   PostAuth,
   PostLine,
+  PutLine,
   DeleteLine,
 }
 
@@ -44,6 +46,10 @@ export async function postAuth(params: PostAuthRequestParams) {
   return res;
 }
 
+export async function getLine(id: number) {
+  return await HttpRequest.get<Line>(`/lines/${id}`);
+}
+
 export async function getLines(params?: GetLineRequestParams) {
   return await HttpRequest.get<PaginationResponse<Line>, typeof params>(
     `/lines`,
@@ -55,11 +61,15 @@ export async function postLines(params: PostLineRequestParams) {
   return await HttpRequest.set<Line, typeof params>("POST", `/lines`, params);
 }
 
-export async function putLines(params: PutLineRequestParams) {
-  return await HttpRequest.set<Line, typeof params>("PUT", `/lines`, params);
+export async function putLines({ id, ...params }: PutLineRequestParams) {
+  return await HttpRequest.set<Line, typeof params>(
+    "PUT",
+    `/lines/${id}`,
+    params
+  );
 }
 
-export async function deleteLines(id: string) {
+export async function deleteLines(id: number) {
   return await HttpRequest.set<Line>("DELETE", `/lines/${id}`);
 }
 

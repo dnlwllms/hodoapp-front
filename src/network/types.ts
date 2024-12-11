@@ -33,7 +33,7 @@ export type Line = CommonDtoResponse & {
   description: string;
   date: string;
   creator: {
-    id: string;
+    id: number;
     nickname: string;
   };
 };
@@ -51,7 +51,9 @@ export type PostLineRequestParams = {
   price: number;
 };
 
-export type PutLineRequestParams = Partial<PostLineRequestParams>;
+export type PutLineRequestParams = Partial<PostLineRequestParams> & {
+  id: number;
+};
 
 export type GetAuthResponseParams = {
   id: number;
