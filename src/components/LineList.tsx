@@ -404,12 +404,12 @@ const SummaryArea = memo(function SummaryArea(props: {
       const todayDate = new Date().getDate();
 
       const current = getChartData(currentDailyPriceSummaryData?.data).filter(
-        ({ x }) => x <= todayDate
+        ({ x }) => (isThisMonth ? x <= todayDate : true)
       );
 
       const last = getChartData(lastDailyPriceSummaryData.data).filter(
         ({ x }) => {
-          return x <= todayDate;
+          return isThisMonth ? x <= todayDate : true;
         }
       );
 
@@ -419,7 +419,33 @@ const SummaryArea = memo(function SummaryArea(props: {
     }
 
     return 0;
-  }, [currentDailyPriceSummaryData, lastDailyPriceSummaryData]);
+  }, [currentDailyPriceSummaryData, isThisMonth, lastDailyPriceSummaryData]);
+
+  const renderComment = () => {
+    if (isThisMonth) {
+      return (
+        <p className="text-gray-100">
+          지난 달 보다{" "}
+          <b className="text-[#E1FF5A]">
+            {Math.abs(diffPrice).toLocaleString()}원{" "}
+            {diffPrice > 0 ? "더" : "덜"}
+          </b>{" "}
+          쓰는 중
+        </p>
+      );
+    } else {
+      return (
+        <p className="text-gray-100">
+          {props.selectedDate.getMonth()}월 보다{" "}
+          <b className="text-[#E1FF5A]">
+            {Math.abs(diffPrice).toLocaleString()}원{" "}
+            {diffPrice > 0 ? "더" : "덜"}
+          </b>{" "}
+          썼어요
+        </p>
+      );
+    }
+  };
 
   return (
     <div className="px-4 pb-8">
@@ -432,27 +458,17 @@ const SummaryArea = memo(function SummaryArea(props: {
             </div>
           </div>
         )}
-        {isThisMonth && (
-          <div className="w-[120px]">
-            {currentDailyPriceSummaryData && lastDailyPriceSummaryData && (
-              <PriceChart
-                current={currentDailyPriceSummaryData.data}
-                last={lastDailyPriceSummaryData.data}
-              />
-            )}
-          </div>
-        )}
+        <div className="w-[120px]">
+          {currentDailyPriceSummaryData && lastDailyPriceSummaryData && (
+            <PriceChart
+              current={currentDailyPriceSummaryData.data}
+              last={lastDailyPriceSummaryData.data}
+              isThisMonth={isThisMonth}
+            />
+          )}
+        </div>
       </div>
-      {isThisMonth && diffPrice !== 0 && (
-        <p className="text-gray-100">
-          지난 달 보다{" "}
-          <b className="text-[#E1FF5A]">
-            {Math.abs(diffPrice).toLocaleString()}원{" "}
-            {diffPrice > 0 ? "더" : "덜"}
-          </b>{" "}
-          쓰는 중
-        </p>
-      )}
+      {diffPrice !== 0 && renderComment()}
     </div>
   );
 });

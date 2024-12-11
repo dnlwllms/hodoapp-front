@@ -9,6 +9,7 @@ import { GetDailyPriceSummaryResponseParams } from "@/network/types";
 type Props = {
   current: GetDailyPriceSummaryResponseParams;
   last: GetDailyPriceSummaryResponseParams;
+  isThisMonth?: boolean;
 };
 
 const dates = Array.from({ length: 31 }).map((_, index) => index + 1);
@@ -20,7 +21,7 @@ export default function PriceChart(props: Props) {
       const borderWidth = 2;
       const tension = 0.3;
 
-      const todayDate = new Date().getDate();
+      const today = new Date();
 
       const chart = new Chart(ctx, {
         type: "line",
@@ -29,7 +30,7 @@ export default function PriceChart(props: Props) {
           datasets: [
             {
               data: getChartData(props.current).filter(
-                ({ x }) => x <= new Date().getDate()
+                ({ x }) => !props.isThisMonth || x <= new Date().getDate()
               ),
               tension,
               borderColor: "#E1FF5A",
@@ -66,7 +67,11 @@ export default function PriceChart(props: Props) {
             point: {
               pointStyle: (ctx) => {
                 if (ctx.datasetIndex === 0) {
-                  if (todayDate - 1 === ctx.dataIndex) {
+                  if (
+                    (props.isThisMonth
+                      ? today.getDate() - 1
+                      : props.current.length - 1) === ctx.dataIndex
+                  ) {
                     return "circle";
                   }
                 }
