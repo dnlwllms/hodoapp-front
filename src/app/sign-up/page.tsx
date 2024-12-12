@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
+import { ChangeEvent, FormEvent, Fragment, useState } from "react";
 
-import { useRouter } from 'next/navigation';
-import HttpRequest from '@/network/HttpRequest';
-import Link from 'next/link';
+import { useRouter } from "next/navigation";
+import HttpRequest from "@/network/HttpRequest";
+import Link from "next/link";
 
 export default function Page() {
-  const [email, setEmail] = useState<string>('');
-  const [nickname, setNickname] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const { push } = useRouter();
 
@@ -35,18 +35,18 @@ export default function Page() {
     e.preventDefault();
 
     try {
-      await HttpRequest.set('POST', '/users', {
+      await HttpRequest.set("POST", "/users", {
         email,
         nickname,
         password,
       });
 
-      await HttpRequest.set('POST', '/auth', {
+      await HttpRequest.set("POST", "/auth", {
         email,
         password,
       });
 
-      push('/line');
+      push("/line");
     } catch (e) {
       alert(e);
     }
@@ -54,18 +54,12 @@ export default function Page() {
 
   return (
     <Fragment>
-      <div className="sticky top-0 left-0 navbar bg-base-100">
+      <div className="sticky top-0 left-0 navbar">
         <div className="navbar-start">
           <Link href="/login">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle"
-            >
-              <svg width={24} height={24}>
-                <use href="/icons/outlined/arrows.svg#Outlined/Arrows/left" />
-              </svg>
-            </div>
+            <svg width={24} height={24}>
+              <use href="/icons/outlined/arrows.svg#Outlined/Arrows/left" />
+            </svg>
           </Link>
         </div>
         <div className="navbar-center">Join</div>

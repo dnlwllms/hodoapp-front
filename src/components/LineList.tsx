@@ -223,23 +223,16 @@ export default function LineList(props: Props) {
                             </div>
                             {user && user.id === creator.id && (
                               <div className="dropdown dropdown-end">
-                                <div
-                                  tabIndex={0}
-                                  role="button"
-                                  className="btn btn-ghost btn-circle"
-                                >
-                                  <svg
-                                    width={24}
-                                    height={24}
-                                    className="translate-x-5"
-                                  >
+                                <div tabIndex={0} role="button">
+                                  <svg width={24} height={24}>
                                     <use href="/icons/outlined/edit.svg#Outlined/Edit/more-one" />
                                   </svg>
                                 </div>
-                                <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-24 p-2 shadow">
-                                  <li>
+                                <ul className="dropdown-content menu rounded-[6px] p-0 z-[1] w-[80px] shadow bg-gray-700">
+                                  <li className="border-[1px] border-gray-500 rounded-[6px_6px_0px_0px]">
                                     <EditLineModal.Open>
                                       <button
+                                        className="justify-center py-4"
                                         tabIndex={1}
                                         onClick={() => {
                                           setModifyId(id);
@@ -249,8 +242,9 @@ export default function LineList(props: Props) {
                                       </button>
                                     </EditLineModal.Open>
                                   </li>
-                                  <li>
+                                  <li className="border-[1px] border-gray-500 rounded-[0px_0px_6px_6px]">
                                     <button
+                                      className="justify-center py-4"
                                       tabIndex={2}
                                       onClick={() => handleDelete(id)}
                                     >

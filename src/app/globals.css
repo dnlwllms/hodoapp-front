@@ -77,7 +77,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .btn {
-  @apply border-transparent;
+  @apply bg-gray-600 border-transparent;
+
+  &:hover,
+  &:active {
+    @apply bg-gray-300 border-transparent;
+  }
 }
 
 .toggle {
