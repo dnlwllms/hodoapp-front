@@ -83,12 +83,8 @@ export default function PriceChart(props: Props) {
           elements: {
             point: {
               pointStyle: (ctx) => {
-                if (ctx.datasetIndex === 0) {
-                  if (
-                    (isThisMonth
-                      ? today.getDate() - 1
-                      : props.current.length - 1) === ctx.dataIndex
-                  ) {
+                if (ctx.datasetIndex === 0 && isThisMonth) {
+                  if (today.getDate() - 1 === ctx.dataIndex) {
                     return "circle";
                   }
                 }

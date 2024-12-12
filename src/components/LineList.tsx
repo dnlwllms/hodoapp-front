@@ -1,6 +1,6 @@
 "use client";
 
-import { addMonths, format, lastDayOfMonth } from "date-fns";
+import { addMonths, format, isBefore, lastDayOfMonth } from "date-fns";
 
 import Link from "next/link";
 
@@ -437,6 +437,10 @@ const SummaryArea = memo(function SummaryArea(props: {
 }) {
   const isThisMonth =
     format(new Date(), "yyyyMM") === format(props.selectedDate, "yyyyMM");
+  const isBeforeDate = isBefore(
+    format(props.selectedDate, "yyyyMM"),
+    format(new Date(), "yyyyMM")
+  );
 
   const lastDate = addMonths(props.selectedDate, -1);
 
@@ -533,7 +537,7 @@ const SummaryArea = memo(function SummaryArea(props: {
           )}
         </div>
       </div>
-      {diffPrice !== 0 && renderComment()}
+      {diffPrice !== 0 && (isBeforeDate || isThisMonth) && renderComment()}
     </div>
   );
 });
