@@ -16,7 +16,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import getQueryClient from "@/network/getQueryClient";
 import { getLine, MutationKey, putLines, QueryKey } from "@/network/api";
 
-import { AlertContext } from "./AlertProvider";
+import { AlertContext } from "@/app/clients/AlertProvider";
 
 const id = "edit_line_modal";
 

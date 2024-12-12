@@ -20,13 +20,13 @@ import getQueryClient from "@/network/getQueryClient";
 
 import useQueryFilter from "@/hooks/useQueryFilter";
 
-import { AlertContext } from "./AlertProvider";
-import { ConfirmContext } from "./ConfirmProvider";
+import { AlertContext } from "@/app/clients/AlertProvider";
+import { ConfirmContext } from "@/app/clients/ConfirmProvider";
+import PriceChart, { getChartData } from "@/app/line/clients/PriceChart";
+import { UserContext } from "@/app/clients/UserProvider";
+
 import AddLineModal from "./AddLineModal";
-import Select from "./Select";
-import PriceChart, { getChartData } from "./PriceChart";
 import EditLineModal from "./EditLineModal";
-import { UserContext } from "./UserProvider";
 
 type Props = {
   searchParams: Record<string, unknown>;
@@ -264,7 +264,7 @@ export default function LineList(props: Props) {
                     );
                   });
               })}
-              <li ref={liRef} className="h-10"></li>
+              <li ref={liRef}></li>
             </ul>
           </>
         );
@@ -317,7 +317,7 @@ export default function LineList(props: Props) {
   };
 
   return (
-    <div className="mb-10">
+    <div>
       <div className="flex items-center justify-between mb-4 px-4 py-8">
         <div className="w-6 h-6">
           <svg
@@ -333,7 +333,8 @@ export default function LineList(props: Props) {
           </svg>
         </div>
         <div className="flex items-center gap-[10px]">
-          <Select
+          <select
+            className="select"
             value={selectedDate.getFullYear()}
             onChange={({ target: { value } }) => {
               const newDate = new Date(
@@ -351,8 +352,9 @@ export default function LineList(props: Props) {
                 </option>
               );
             })}
-          </Select>
-          <Select
+          </select>
+          <select
+            className="select"
             value={selectedDate.getMonth() + 1}
             onChange={({ target: { value } }) => {
               const newDate = new Date(
@@ -370,7 +372,7 @@ export default function LineList(props: Props) {
                 </option>
               );
             })}
-          </Select>
+          </select>
         </div>
         <div
           className="w-6 h-6"
@@ -407,8 +409,8 @@ export default function LineList(props: Props) {
           정산
         </a>
       </div>
-      {renderByTab()}
-      <div className="fixed bottom-8 right-4">
+      <div className="pb-[58px]">{renderByTab()}</div>
+      <div className="fixed bottom-20 right-4">
         <AddLineModal.Open>
           <button className="btn rounded-full bg-gray-600 w-[60px] h-[60px]">
             <svg width={32} height={32} color="#FDFDFD">

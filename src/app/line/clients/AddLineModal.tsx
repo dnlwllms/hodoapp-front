@@ -15,12 +15,12 @@ import { useMutation } from "@tanstack/react-query";
 import getQueryClient from "@/network/getQueryClient";
 import { MutationKey, postLines, QueryKey } from "@/network/api";
 
-import { AlertContext } from "./AlertProvider";
+import { AlertContext } from "@/app/clients/AlertProvider";
 
-const id = "add_line_modal";
+const dialogId = "add_line_modal";
 
 const handleDialog = (type: "open" | "close") => {
-  const dialog = document.getElementById(id);
+  const dialog = document.getElementById(dialogId);
 
   if (dialog instanceof HTMLDialogElement) {
     switch (type) {
@@ -92,7 +92,7 @@ export default function AddLineModal() {
   };
 
   return (
-    <dialog id={id} className="modal">
+    <dialog id={dialogId} className="modal">
       <div className="modal-box bg-gray-900">
         <form onSubmit={handleSubmit}>
           <div className="flex justify-end">

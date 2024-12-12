@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 
 import localFont from "next/font/local";
 
-import AlertProvider from "@/components/AlertProvider";
-import ConfirmProvider from "@/components/ConfirmProvider";
-import ReactQueryProvider from "@/components/ReactQueryProvider";
+import AlertProvider from "@/app/clients/AlertProvider";
+import ConfirmProvider from "@/app/clients/ConfirmProvider";
+import ReactQueryProvider from "@/app/clients/ReactQueryProvider";
 
 import "./globals.css";
-import UserProvider from "@/components/UserProvider";
+import UserProvider from "@/app/clients/UserProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

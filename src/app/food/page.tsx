@@ -1,22 +1,12 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import { PageProps } from "@/network/types";
 import { getLines, QueryKey } from "@/network/api";
 import getQueryClient from "@/network/getQueryClient";
 
 import BottomNavigation from "@/app/clients/BottomNavigation";
-import LineList from "./clients/LineList";
+import Calendar from "../clients/Calendar";
 
-export default async function Page(
-  props: PageProps<
-    unknown,
-    {
-      selectedDate: string;
-    }
-  >
-) {
-  const searchParams = await props.searchParams;
-
+export default async function Page() {
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
@@ -26,7 +16,7 @@ export default async function Page(
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <LineList searchParams={searchParams} />
+      <Calendar />
       <BottomNavigation />
     </HydrationBoundary>
   );

@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { MutationKey, postAuth, QueryKey } from "@/network/api";
 import getQueryClient from "@/network/getQueryClient";
-import { AlertContext } from "@/components/AlertProvider";
+import { AlertContext } from "@/app/clients/AlertProvider";
 
 export default function Page() {
   const [email, setEmail] = useState<string>("");
