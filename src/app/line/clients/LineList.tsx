@@ -18,7 +18,7 @@ import {
 } from "@/network/api";
 import getQueryClient from "@/network/getQueryClient";
 
-import useQueryFilter from "@/hooks/useQueryFilter";
+import useQueryFilter from "@/app/clients/useQueryFilter";
 
 import { AlertContext } from "@/app/clients/AlertProvider";
 import { ConfirmContext } from "@/app/clients/ConfirmProvider";

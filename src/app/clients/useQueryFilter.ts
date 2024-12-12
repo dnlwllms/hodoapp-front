@@ -1,3 +1,5 @@
+"use client";
+
 import queryString from "query-string";
 
 import { useRouter, useSearchParams } from "next/navigation";
