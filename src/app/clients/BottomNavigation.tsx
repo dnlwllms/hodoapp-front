@@ -22,7 +22,7 @@ export default function BottomNavigation() {
             key: 1,
             href: "/line",
             title: "정산",
-            icon: "/icons/outlined/books.svg#Outlined/Books/notebook-and-pen",
+            icon: "/icons/filled/books.svg#Filled/Books/view-list-1",
           },
           {
             key: 2,
