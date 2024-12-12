@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  background: #171b1c;
+  @apply text-gray-100 bg-gray-900;
 }
 
 html,
@@ -17,6 +17,11 @@ body {
 
 .select {
   @apply h-[32px] min-h-[32px] rounded-[100px] text-[14px] pl-[10px] pr-[36px] text-gray-100 bg-gray-700  bg-[url(/icons/select-arrow.svg)] bg-[length:16px_16px] bg-[calc(100%-10px)_calc(1px+50%),calc(100%-16.1px)_calc(1px+50%)];
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.8);
 }
 
 .tab:is(.tab-active, [aria-selected="true"]):not(.tab-disabled):not([disabled]),
@@ -65,8 +70,16 @@ body {
     105deg,
     transparent 0%,
     transparent 40%,
-    #41474C 50%,
+    #41474c 50%,
     transparent 60%,
     transparent 100%
   );
+}
+
+.btn {
+  @apply border-transparent;
+}
+
+.toggle {
+  @apply bg-gray-700 [--tglbg:#171b1c];
 }

@@ -23,15 +23,14 @@ export default {
     },
   },
   plugins: [daisyui],
-  // daisyui: {
-  //   themes: [
-  //     {
-  //       mytheme: {
-  //         // "--fallback-b1": "#171B1C",
-  //         // "--fallback-bc": "#FDFDFD",
-  //         // "--fallback-b3": "#41474C",
-  //       },
-  //     },
-  //   ],
-  // },
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          primary: "#E1FF5A",
+          "--fallback-bc": "#5A6166",
+        },
+      },
+    ],
+  },
 } satisfies Config;

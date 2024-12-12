@@ -127,6 +127,8 @@ export default function LineList(props: Props) {
     };
   }, [fetchNextPage, hasNextPage]);
 
+  const [toggle, setToggle] = useState(false);
+
   const handleDelete = async (id: number) => {
     confirm({
       message: "정말 삭제하시겠습니까?",
@@ -190,74 +192,87 @@ export default function LineList(props: Props) {
           );
         }
         return (
-          <ul className="flex flex-col gap-4 p-4">
-            {linesData?.pages.map(({ data: { list } }) => {
-              return list.map(({ id, description, date, price, creator }) => {
-                const parsedDate = new Date(date);
-                return (
-                  <li
-                    key={id}
-                    className="flex flex-col text-gray-100 gap-[10px] p-4 bg-gray-800 rounded-[10px]"
-                  >
-                    <div>
-                      <div className="text-gray-300 text-[14px]">
-                        {format(parsedDate, "yyyy-MM-dd")}
-                      </div>
-                      <div className="flex justify-between items-center h-12">
-                        <div className="text-lg font-bold text-[20px]">
-                          {price.toLocaleString()}원
-                        </div>
-                        {user && user.id === creator.id && (
-                          <div className="dropdown dropdown-end">
-                            <div
-                              tabIndex={0}
-                              role="button"
-                              className="btn btn-ghost btn-circle"
-                            >
-                              <svg
-                                width={24}
-                                height={24}
-                                className="translate-x-5"
-                              >
-                                <use href="/icons/outlined/edit.svg#Outlined/Edit/more-one" />
-                              </svg>
-                            </div>
-                            <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-24 p-2 shadow">
-                              <li>
-                                <EditLineModal.Open>
-                                  <button
-                                    tabIndex={1}
-                                    onClick={() => {
-                                      setModifyId(id);
-                                    }}
-                                  >
-                                    수정
-                                  </button>
-                                </EditLineModal.Open>
-                              </li>
-                              <li>
-                                <button
-                                  tabIndex={2}
-                                  onClick={() => handleDelete(id)}
-                                >
-                                  삭제
-                                </button>
-                              </li>
-                            </ul>
+          <>
+            <div className="flex items-center gap-4 justify-end px-4 pt-4">
+              내가 쓴 내역만 보기
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={toggle}
+                onChange={({ target: { checked } }) => setToggle(checked)}
+              />
+            </div>
+            <ul className="flex flex-col gap-4 p-4">
+              {linesData?.pages.map(({ data: { list } }) => {
+                return list
+                  .filter(({ creator }) => !toggle || creator.id === user?.id)
+                  .map(({ id, description, date, price, creator }) => {
+                    const parsedDate = new Date(date);
+                    return (
+                      <li
+                        key={id}
+                        className="flex flex-col text-gray-100 gap-[10px] p-4 bg-gray-800 rounded-[10px]"
+                      >
+                        <div>
+                          <div className="text-gray-300 text-[14px]">
+                            {format(parsedDate, "yyyy-MM-dd")}
                           </div>
-                        )}
-                      </div>
-                      <div className="flex gap-2 justify-between text-gray-300 text-[16px]">
-                        <span>{description}</span>
-                        <span>{creator.nickname}</span>
-                      </div>
-                    </div>
-                  </li>
-                );
-              });
-            })}
-            <li ref={liRef} className="h-10"></li>
-          </ul>
+                          <div className="flex justify-between items-center h-12">
+                            <div className="text-lg font-bold text-[20px]">
+                              {price.toLocaleString()}원
+                            </div>
+                            {user && user.id === creator.id && (
+                              <div className="dropdown dropdown-end">
+                                <div
+                                  tabIndex={0}
+                                  role="button"
+                                  className="btn btn-ghost btn-circle"
+                                >
+                                  <svg
+                                    width={24}
+                                    height={24}
+                                    className="translate-x-5"
+                                  >
+                                    <use href="/icons/outlined/edit.svg#Outlined/Edit/more-one" />
+                                  </svg>
+                                </div>
+                                <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-24 p-2 shadow">
+                                  <li>
+                                    <EditLineModal.Open>
+                                      <button
+                                        tabIndex={1}
+                                        onClick={() => {
+                                          setModifyId(id);
+                                        }}
+                                      >
+                                        수정
+                                      </button>
+                                    </EditLineModal.Open>
+                                  </li>
+                                  <li>
+                                    <button
+                                      tabIndex={2}
+                                      onClick={() => handleDelete(id)}
+                                    >
+                                      삭제
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex gap-2 justify-between text-gray-300 text-[16px]">
+                            <span>{description}</span>
+                            <span>{creator.nickname}</span>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  });
+              })}
+              <li ref={liRef} className="h-10"></li>
+            </ul>
+          </>
         );
       }
       case 1: {
@@ -476,7 +491,7 @@ const SummaryArea = memo(function SummaryArea(props: {
       return (
         <p className="text-gray-100">
           지난 달 보다{" "}
-          <b className="text-[#E1FF5A]">
+          <b className="text-primary">
             {Math.abs(diffPrice).toLocaleString()}원{" "}
             {diffPrice > 0 ? "더" : "덜"}
           </b>{" "}
@@ -487,7 +502,7 @@ const SummaryArea = memo(function SummaryArea(props: {
       return (
         <p className="text-gray-100">
           {props.selectedDate.getMonth() || 12}월 보다{" "}
-          <b className="text-[#E1FF5A]">
+          <b className="text-primary">
             {Math.abs(diffPrice).toLocaleString()}원{" "}
             {diffPrice > 0 ? "더" : "덜"}
           </b>{" "}
@@ -503,7 +518,7 @@ const SummaryArea = memo(function SummaryArea(props: {
         {typeof props.totalPrice === "number" && (
           <div>
             <div className="text-[16px] text-gray-100">총 사용 금액</div>
-            <div className="text-[28px] text-[#E1FF5A] font-bold">
+            <div className="text-[28px] text-primary font-bold">
               {props.totalPrice.toLocaleString()}원
             </div>
           </div>
