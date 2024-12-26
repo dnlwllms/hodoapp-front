@@ -94,7 +94,7 @@ export default function Page() {
             onChange={handlePasswordChange}
           />
         </label>
-        <button type="submit" className="btn">
+        <button type="submit" className="btn" disabled={!email || !password}>
           로그인
         </button>
       </div>

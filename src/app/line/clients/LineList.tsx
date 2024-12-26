@@ -412,7 +412,7 @@ export default function LineList(props: Props) {
       <div className="pb-[58px]">{renderByTab()}</div>
       <div className="fixed bottom-20 right-4">
         <AddLineModal.Open>
-          <button className="btn rounded-full bg-gray-600 w-[60px] h-[60px]">
+          <button className="flex justify-center items-center rounded-full bg-gray-600 w-[60px] h-[60px]">
             <svg width={32} height={32} color="#FDFDFD">
               <use href="/icons/outlined/character.svg#Outlined/Character/plus" />
             </svg>

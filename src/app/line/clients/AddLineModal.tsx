@@ -158,7 +158,7 @@ export default function AddLineModal() {
             <button
               type="submit"
               className="btn w-full bg-gray-100 text-gray-900"
-              disabled={isPending}
+              disabled={isPending || !description || !price || !date}
             >
               추가
             </button>
