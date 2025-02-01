@@ -53,7 +53,7 @@ export default function LineList(props: Props) {
 
   const startDate = useMemo(() => selectedDate.toISOString(), [selectedDate]);
   const endDate = useMemo(
-    () => lastDayOfMonth(selectedDate).toISOString(),
+    () => new Date(selectedDate.getFullYear(), selectedDate.getMonth(), lastDayOfMonth(selectedDate).getDate(), 23, 59, 59).toISOString(),
     [selectedDate]
   );
 
