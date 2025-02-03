@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 
 import localFont from "next/font/local";
 
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-
 import AlertProvider from "@/app/clients/AlertProvider";
 import ConfirmProvider from "@/app/clients/ConfirmProvider";
 import ReactQueryProvider from "@/app/clients/ReactQueryProvider";
@@ -52,8 +49,6 @@ export default async function RootLayout({
           </UserProvider>
         </body>
       </html>
-      <Analytics />
-      <SpeedInsights />
     </ReactQueryProvider>
   );
 }

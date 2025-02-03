@@ -51,9 +51,20 @@ export default function LineList(props: Props) {
     new Date(thisYear, thisMonth, 1)
   );
 
-  const startDate = useMemo(() => selectedDate.toISOString(), [selectedDate]);
+  const startDate = useMemo(
+    () => format(selectedDate, "yyyy-MM-dd"),
+    [selectedDate]
+  );
   const endDate = useMemo(
-    () => new Date(selectedDate.getFullYear(), selectedDate.getMonth(), lastDayOfMonth(selectedDate).getDate(), 23, 59, 59).toISOString(),
+    () =>
+      format(
+        new Date(
+          selectedDate.getFullYear(),
+          selectedDate.getMonth(),
+          lastDayOfMonth(selectedDate).getDate()
+        ),
+        "yyyy-MM-dd"
+      ),
     [selectedDate]
   );
 
@@ -67,7 +78,7 @@ export default function LineList(props: Props) {
 
   useQueryFilter({
     tab,
-    selectedDate: selectedDate.toISOString(),
+    selectedDate: format(selectedDate, "yyyy-MM-dd"),
   });
 
   const {
@@ -440,9 +451,12 @@ const SummaryArea = memo(function SummaryArea(props: {
 
   const lastDate = addMonths(props.selectedDate, -1);
 
-  const lastStartDate = useMemo(() => lastDate.toISOString(), [lastDate]);
+  const lastStartDate = useMemo(
+    () => format(lastDate, "yyyy-MM-dd"),
+    [lastDate]
+  );
   const lastEndDate = useMemo(
-    () => lastDayOfMonth(lastDate).toISOString(),
+    () => format(lastDayOfMonth(lastDate), "yyyy-MM-dd"),
     [lastDate]
   );
 
