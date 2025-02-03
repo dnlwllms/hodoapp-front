@@ -212,7 +212,7 @@ export default function EditLineModal(props: {
                   <div className="modal-action mt-8">
                     <button
                       type="submit"
-                      className="btn w-full bg-gray-100 text-gray-900"
+                      className="btn w-full"
                       disabled={isPending}
                     >
                       수정

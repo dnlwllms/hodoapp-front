@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useState } from "react";
 
 type ConfirmInfo = {
   message: string;
   callback: () => void;
 };
 
-const id = 'confirm_modal';
+const id = "confirm_modal";
 
-const handleDialog = (type: 'open' | 'close') => {
+const handleDialog = (type: "open" | "close") => {
   const dialog = document.getElementById(id);
 
   if (dialog instanceof HTMLDialogElement) {
     switch (type) {
-      case 'open': {
+      case "open": {
         dialog.showModal();
         break;
       }
-      case 'close': {
+      case "close": {
         dialog.close();
         break;
       }
@@ -35,22 +35,22 @@ export default function ConfirmProvider({ children }: { children: ReactNode }) {
 
   const confirm = (confirmInfo: ConfirmInfo) => {
     setConfirmInfo(confirmInfo);
-    handleDialog('open');
+    handleDialog("open");
   };
 
   return (
     <ConfirmContext.Provider value={{ confirm }}>
       {children}
       <dialog id={id} className="modal">
-        <div className="modal-box">
+        <div className="modal-box bg-gray-900">
           <p>{confirmInfo?.message}</p>
           <div className="modal-action">
             <button
               tabIndex={1}
               type="button"
-              className="btn btn-ghost"
+              className="btn"
               onClick={() => {
-                handleDialog('close');
+                handleDialog("close");
               }}
             >
               취소
@@ -61,7 +61,7 @@ export default function ConfirmProvider({ children }: { children: ReactNode }) {
               className="btn"
               onClick={() => {
                 confirmInfo?.callback();
-                handleDialog('close');
+                handleDialog("close");
               }}
             >
               확인
